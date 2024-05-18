@@ -7,10 +7,20 @@
     "name": ""
   },
   "devDependencies": {
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "nodemon": "^3.1.0"
   },
   "eslintConfig": {},
   "dependencies": {
-    "express": "^4.19.2"
+    "axios": "^1.6.8",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "prettier": "^3.2.5"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   }
 }

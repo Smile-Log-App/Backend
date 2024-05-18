@@ -1,59 +1,44 @@
-const express = require('express')
-const app = express()
-const port = 3000 // ¼±¾ğ ÇØÁà¾ß ÇÔ
+import express from "express";
+import bodyParser from "body-parser";
+import axios from "axios";
+import cors from "cors";
 
-/*app.get('/', function (req, res) { // ver1
-res.send('Hello World')
-})*/
+const app = express();
+const port = 3000;
 
-/*app.use(express.json())
-app.post('user/:id', (req, res) => { // exios, fetch ÀÌ¿ëÇØ¼­ body¿¡ °ªÀ» ´ã¾Æ º¸³¿(json µ¥ÀÌÅÍÀÓ)
-    const p = req.params
-    console.log(p);
-    const b = req.body
-    console.log(b)
+// CORS ì„¤ì •
+app.use(cors());
 
-    res.send({ 'message': 'Hello world!' })
-})*/
+// body-parser ë¯¸ë“¤ì›¨ì–´ ì„¤ì •
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/sound/:name', (req, res) => {
-    const { name } = req.params
-    if (name == 'dog') {
-        res.json({'sound' : 'bowwow'})
-    } else if (name == 'cat') {
-        res.json({ 'sound': 'meow' })
-    } else {
-        res.json({ 'sound': 'unknown' })
-    }
-})
+// ì¼ê¸° ì»¨í…ì¸ ë¥¼ ë°›ì•„ì„œ ì™¸ë¶€ APIë¡œ ìš”ì²­ì„ ë³´ë‚´ëŠ” ë¼ìš°íŠ¸ ì„¤ì •
+app.post("/diary", async (req, res) => {
+  const { content } = req.body;
 
-app.get('/user/:id', (req, res) => {
-/*    const q = req.params // params : º¯¼ö¸íÀ¸·Î ¹Ş±â
-    console.log(q.id) // q, q.id ¾à°£´Ù¸§*/
-    const q = req.query // query : ?name=petite&...
-    console.log(q)
+  const client_id = "ki39rdkaso";
+  const client_secret = "0sB35nX5rFrxVZiiB05lcCZKC2n1GDFEASx2pve9";
+  const url = "https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze";
 
-    res.json({ 'userid': q.name }) // q, q.id ¾à°£´Ù¸§
-})
+  const headers = {
+    "X-NCP-APIGW-API-KEY-ID": client_id,
+    "X-NCP-APIGW-API-KEY": client_secret,
+    "Content-Type": "application/json",
+  };
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+  try {
+    console.log("Request received:", { content }); // ë””ë²„ê¹…ì„ ìœ„í•œ ë¡œê·¸ ì¶”ê°€
+    const response = await axios.post(url, { content }, { headers });
+    console.log("Naver API response:", response.data); // ë””ë²„ê¹…ì„ ìœ„í•œ ë¡œê·¸ ì¶”ê°€
+    res.json(response.data);
+  } catch (error) {
+    console.error("Naver API error:", error.response ? error.response.data : error.message); // ë””ë²„ê¹…ì„ ìœ„í•œ ë¡œê·¸ ì¶”ê°€
+    res.status(error.response ? error.response.status : 500).json({ error: error.message });
+  }
+});
 
-app.get('/dog', (req, res) => {
-    res.send({ 'sound': 'bow wow' })
-    // ÇÑ±ÛÀº ÀÎÄÚµù º¯È¯ »çÀÌÆ® ÀÌ¿ë
-    // send ´ë½Å json ½áµµµÊ
-    // res.send("<a href='https://www.youtube.com/'> youtube</a>")
-    // res.send('<h1>bowwow</h1>')
-})
-
-app.get('/cat', (req, res) => {
-    res.send('meow')
-})
-
-
-
+// ì„œë²„ ì‹œì‘
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`); // 1¿·
-})
+  console.log(`Server is running on http://localhost:${port}`);
+});
