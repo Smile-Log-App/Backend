@@ -55,9 +55,12 @@ export const getDiaryByDate = async (req, res) => {
   const { date } = req.params;
   try {
     const diary = await prisma.diary.findFirst({
-      where: {
-        date: new Date(date),
-      },
+        where: {
+            date: {
+              gte: new Date(`${date}T00:00:00.000Z`), // 날짜의 시작 시간
+              lt: new Date(`${date}T23:59:59.999Z`), // 날짜의 끝 시간
+            },
+          },
       include: {
         emotionAnalysis: true,
       },

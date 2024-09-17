@@ -18,6 +18,7 @@ model User {
   username     String   // 이름
   user_login_id String   @unique // 아이디, unique constraint
   password     String   // 비밀번호 (Hash 처리됨)
+  refresh_token String?  // 새로 추가 (nullable 필드)
 
   diaries      Diary[]  // 1:N 관계 - 사용자는 여러 일기를 가질 수 있음
 }

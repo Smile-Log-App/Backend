@@ -2,6 +2,31 @@ import prisma from '../prisma/prismaClient.js';
 import bcrypt from 'bcrypt';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwtUtils.js';
 
+// 회원가입
+export const register = async (req, res) => {
+    const { username, user_login_id, password } = req.body;
+  
+    try {
+      // 비밀번호 해시
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+  
+      // 사용자 생성
+      const newUser = await prisma.user.create({
+        data: {
+          username: username,
+          user_login_id: user_login_id,
+          password: hashedPassword,
+        },
+      });
+  
+      res.status(201).json({ message: '사용자가 성공적으로 생성되었습니다.', userId: newUser.user_id });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: '회원가입 처리 중 오류가 발생했습니다.' });
+    }
+  };
+  
 // 로그인
 export const login = async (req, res) => {
   const { user_login_id, password } = req.body;
