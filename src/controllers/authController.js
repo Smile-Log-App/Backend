@@ -1,6 +1,6 @@
 import prisma from '../prisma/prismaClient.js';
 import bcrypt from 'bcrypt';
-import { generateAccessToken, generateRefreshToken } from '../utils/jwtUtils.js';
+import { generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken } from '../utils/jwtUtils.js';
 
 // 회원가입
 export const register = async (req, res) => {
@@ -26,7 +26,7 @@ export const register = async (req, res) => {
       res.status(500).json({ error: '회원가입 처리 중 오류가 발생했습니다.' });
     }
   };
-  
+
 // 로그인
 export const login = async (req, res) => {
   const { user_login_id, password } = req.body;
