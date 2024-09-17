@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "이 프로젝트는 Node.js를 사용하여 개발된 일기 작성 및 감정 분석 애플리케이션의 백엔드 레포지토리입니다. 프론트엔드로부터 일기 내용을 수신하고, Naver Sentiment API를 사용하여 감정 분석을 수행한 후 결과를 반환합니다.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "express": "^4.21.0",
+    "mysql2": "^3.11.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.19.1"
+  }
+}

@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id      Int      @id @default(autoincrement()) // Primary Key
+  username     String   // 이름
+  user_login_id String   @unique // 아이디, unique constraint
+  password     String   // 비밀번호 (Hash 처리됨)
+
+  diaries      Diary[]  // 1:N 관계 - 사용자는 여러 일기를 가질 수 있음
+}
+
+model Diary {
+  diary_id     Int      @id @default(autoincrement()) // Primary Key
+  user_id      Int      // Foreign Key (User와 관계 설정)
+  date         DateTime @default(now()) // 작성 날짜, 일기를 제출하면 자동으로 현재 날짜 저장
+  content      String   // 일기 내용
+
+  user         User     @relation(fields: [user_id], references: [user_id]) // User와의 관계
+  emotionAnalysis EmotionAnalysis?  // 1:1 관계 - 감정 분석 결과를 가짐
+}
+
+model EmotionAnalysis {
+  analysis_id    Int      @id @default(autoincrement()) // Primary Key
+  diary_id       Int      @unique // Foreign Key (Diary와 관계 설정)
+  
+// 감정 분석 퍼센티지
+  joyful_pct     Decimal @default(0.0) // 기쁨
+  sad_pct        Decimal @default(0.0) // 슬픔
+  anxious_pct    Decimal @default(0.0) // 불안
+  annoyed_pct    Decimal @default(0.0) // 짜증
+  neutral_pct    Decimal @default(0.0) // 중립
+  tired_pct      Decimal @default(0.0) // 피곤
+
+
+  diary          Diary    @relation(fields: [diary_id], references: [diary_id]) // Diary와의 관계
+}
