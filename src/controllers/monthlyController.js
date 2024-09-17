@@ -51,7 +51,7 @@ export const getMonthlyEmotions = async (req, res) => {
       res.status(200).json({ monthly_emotions: monthlyEmotions });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: '월별 감정 조회 중 오류가 발생했습니다.' });
+      res.status(500).json({ error: '월별 감정 조회 중 오류가 발생했습니다.', message: error.message });
     }
   };
   

@@ -23,7 +23,7 @@ export const register = async (req, res) => {
       res.status(201).json({ message: '사용자가 성공적으로 생성되었습니다.', userId: newUser.user_id });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: '회원가입 처리 중 오류가 발생했습니다.' });
+      res.status(500).json({ error: '회원가입 처리 중 오류가 발생했습니다.', message: error.message });
     }
   };
 
@@ -62,7 +62,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: '로그인 처리 중 오류가 발생했습니다.' });
+    res.status(500).json({ error: '로그인 처리 중 오류가 발생했습니다.', message: error.message });
   }
 };
 
@@ -91,6 +91,6 @@ export const refreshAccessToken = async (req, res) => {
     res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: '토큰 갱신 중 오류가 발생했습니다.' });
+    res.status(500).json({ error: '토큰 갱신 중 오류가 발생했습니다.', message: error.message });
   }
 };
