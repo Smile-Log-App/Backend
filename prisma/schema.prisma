@@ -27,7 +27,7 @@ model Diary {
   diary_id     Int      @id @default(autoincrement()) // Primary Key
   user_id      Int      // Foreign Key (User와 관계 설정)
   date         DateTime @default(now()) // 작성 날짜, 일기를 제출하면 자동으로 현재 날짜 저장
-  content      String   // 일기 내용
+  content      String   // 일기 내용 : 65,535자까지 저장 가능
 
   user         User     @relation(fields: [user_id], references: [user_id]) // User와의 관계
   emotionAnalysis EmotionAnalysis?  // 1:1 관계 - 감정 분석 결과를 가짐
