@@ -38,12 +38,12 @@ model EmotionAnalysis {
   diary_id       Int      @unique // Foreign Key (Diary와 관계 설정)
   
 // 감정 분석 퍼센티지
-  joyful_pct     Decimal @default(0.0) // 기쁨
-  sad_pct        Decimal @default(0.0) // 슬픔
-  anxious_pct    Decimal @default(0.0) // 불안
-  annoyed_pct    Decimal @default(0.0) // 짜증
-  neutral_pct    Decimal @default(0.0) // 중립
-  tired_pct      Decimal @default(0.0) // 피곤
+  joyful_pct     Int @default(0) // 기쁨
+  sad_pct        Int @default(0) // 슬픔
+  anxious_pct    Int @default(0) // 불안
+  annoyed_pct    Int @default(0) // 짜증
+  neutral_pct    Int @default(0) // 중립
+  tired_pct      Int @default(0) // 피곤
 
 
   diary          Diary    @relation(fields: [diary_id], references: [diary_id]) // Diary와의 관계
