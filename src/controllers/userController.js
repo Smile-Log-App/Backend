@@ -6,7 +6,7 @@ export const getUserInfo = async (req, res) => {
     const userId = req.user.userId; // 토큰에서 추출된 userId 사용
     const user = await prisma.user.findUnique({
       where: { user_id: userId },
-      select: { username: true, user_login_id: true }
+      select: { username: true }
     });
 
     if (!user) {
