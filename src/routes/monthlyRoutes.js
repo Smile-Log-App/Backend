@@ -5,6 +5,6 @@ import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/monthly/:year/:month', authenticateToken, getMonthlyEmotions);
+router.get('/monthly', getMonthlyEmotions);
 
 export default router;

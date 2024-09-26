@@ -5,6 +5,6 @@ import { authenticateToken } from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 router.post('/daily', createDiary);
-router.get('/daily/:date', getDiaryByDate);
+router.get('/daily', getDiaryByDate);
 
 export default router;

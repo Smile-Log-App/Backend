@@ -16,7 +16,8 @@ export const generateRefreshToken = (user) => {
 // Access Token 검증
 export const verifyAccessToken = (token) => {
   try {
-    return jwt.verify(token, ACCESS_TOKEN_SECRET);
+    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    return decoded;
   } catch (error) {
     throw new Error('Invalid Access Token');
   }

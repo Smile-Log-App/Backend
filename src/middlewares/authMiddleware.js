@@ -10,7 +10,7 @@ export const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = verifyAccessToken(token);
-    req.user = decoded;  // 사용자 정보를 요청 객체에 저장
+    req.user = decoded; // 사용자 정보를 요청 객체에 저장
     next();
   } catch (error) {
     res.status(403).json({ error: '토큰이 유효하지 않습니다.' });
