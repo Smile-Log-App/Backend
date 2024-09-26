@@ -14,28 +14,28 @@ const generateRandomEmotionAnalysis = () => {
 
 // 일기 작성
 export const createDiary = async (req, res) => {
-  const { user_id, content } = req.body;
+  const { content, date, emotionAnalysis } = req.body;
+  const userId = req.user.userId; // 토큰에서 추출된 userId 사용
+
   try {
     const newDiary = await prisma.diary.create({
       data: {
-        user_id: parseInt(user_id),
-        content: content,
+        user_id: userId,
+        content,
+        date: date ? new Date(date) : new Date(), // date가 없으면 현재 날짜 사용
       },
     });
 
-    // 랜덤 감정 분석 결과 생성
-    const randomEmotionAnalysis = generateRandomEmotionAnalysis();
-
-    // 감정 분석 결과를 DB에 저장
+    // 프론트엔드로부터 받은 감정 분석 결과 저장
     const newEmotionAnalysis = await prisma.emotionAnalysis.create({
       data: {
         diary_id: newDiary.diary_id,
-        joy_pct: randomEmotionAnalysis.joy_pct,
-        sadness_pct: randomEmotionAnalysis.sadness_pct,
-        anxiety_pct: randomEmotionAnalysis.anxiety_pct,
-        anger_pct: randomEmotionAnalysis.anger_pct,
-        neutrality_pct: randomEmotionAnalysis.neutrality_pct,
-        fatigue_pct: randomEmotionAnalysis.fatigue_pct,
+        joy_pct: emotionAnalysis.joy_pct,
+        sadness_pct: emotionAnalysis.sadness_pct,
+        anxiety_pct: emotionAnalysis.anxiety_pct,
+        anger_pct: emotionAnalysis.anger_pct,
+        neutrality_pct: emotionAnalysis.neutrality_pct,
+        fatigue_pct: emotionAnalysis.fatigue_pct,
       },
     });
 
@@ -49,6 +49,7 @@ export const createDiary = async (req, res) => {
     res.status(500).json({ error: '일기를 작성하는 도중 오류가 발생했습니다.', message: error.message });
   }
 };
+
 
 // 특정 날짜의 일기와 감정 분석 조회
 export const getDiaryByDate = async (req, res) => {
