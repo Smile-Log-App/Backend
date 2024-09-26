@@ -23,15 +23,15 @@ export const getMonthlyEmotions = async (req, res) => {
         
         // 가장 높은 퍼센티지의 감정을 찾기
         const emotionsMap = {
-          joyful_pct: 'joyful',
-          sad_pct: 'sad',
-          anxious_pct: 'anxious',
-          annoyed_pct: 'annoyed',
-          neutral_pct: 'neutral',
-          tired_pct: 'tired',
+          joy_pct: 'joy',
+          sadness_pct: 'sadness',
+          anxiety_pct: 'anxiety',
+          anger_pct: 'anger',
+          neutrality_pct: 'neutrality',
+          fatigue_pct: 'fatigue',
         };
   
-        let topEmotion = 'neutral';
+        let topEmotion = 'neutrality';
         let topPercentage = 0;
   
         for (let [key, value] of Object.entries(emotionsMap)) {
