@@ -51,17 +51,20 @@ export const createDiary = async (req, res) => {
 };
 
 
-// 특정 날짜의 일기와 감정 분석 조회
+// 일별 일기 조회
 export const getDiaryByDate = async (req, res) => {
-  const { date } = req.params;
+  const { date } = req.query; // 쿼리 파라미터에서 date를 가져옴
+  const userId = req.user.userId;
+
   try {
     const diary = await prisma.diary.findFirst({
-        where: {
-            date: {
-              gte: new Date(`${date}T00:00:00.000Z`), // 날짜의 시작 시간
-              lt: new Date(`${date}T23:59:59.999Z`), // 날짜의 끝 시간
-            },
-          },
+      where: {
+        user_id: userId,
+        date: {
+          gte: new Date(`${date}T00:00:00.000Z`), // 날짜의 시작 시간
+          lt: new Date(`${date}T23:59:59.999Z`), // 날짜의 끝 시간
+        },
+      },
       include: {
         emotionAnalysis: true,
       },
