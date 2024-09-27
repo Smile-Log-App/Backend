@@ -102,11 +102,19 @@ export const login = async (req, res) => {
 export const refreshAccessToken = async (req, res) => {
   const { refreshToken } = req.body;
 
+  // 유효성 검사: Refresh Token이 존재하는지 확인
   if (!refreshToken) {
-    return res.status(401).json({ error: 'Refresh Token이 없습니다.' });
+    return res.status(401).json({ error: 'Refresh Token이 제공되지 않았습니다.' });
   }
 
   try {
+    // Refresh Token 형식 검증
+    const validToken = verifyRefreshToken(refreshToken);
+    if (!validToken) {
+      return res.status(403).json({ error: '유효하지 않은 Refresh Token입니다.' });
+    }
+
+    // DB에서 Refresh Token 확인
     const user = await prisma.user.findFirst({
       where: { refresh_token: refreshToken },
     });
@@ -115,11 +123,9 @@ export const refreshAccessToken = async (req, res) => {
       return res.status(403).json({ error: 'Refresh Token이 유효하지 않습니다.' });
     }
 
-    // Refresh Token 검증
-    const validToken = verifyRefreshToken(refreshToken);
-
     // 새로운 Access Token 발급
     const newAccessToken = generateAccessToken(user);
+
     res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
     console.error(error);
