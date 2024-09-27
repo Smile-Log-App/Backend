@@ -6,14 +6,22 @@ export const createDiary = async (req, res) => {
   const userId = req.user.userId; // 토큰에서 추출된 userId 사용
 
   // 유효성 검사
-  if (!content || !emotionAnalysis) {
-    return res.status(400).json({ error: '일기 내용 및 감정 분석 결과를 입력해주세요.' });
+  if (!content) {
+    return res.status(400).json({ error: '일기 내용을 입력해주세요.' });
   }
 
-  // 감정 퍼센티지 범위 검사
+  // 감정 분석 결과가 있는지 확인
+  if (!emotionAnalysis) {
+    return res.status(400).json({ error: '감정 분석 결과를 입력해주세요.' });
+  }
+
+  // 감정 분석 결과의 모든 키가 포함되어 있는지 확인
   const emotionKeys = ['joy_pct', 'sadness_pct', 'anxiety_pct', 'anger_pct', 'neutrality_pct', 'fatigue_pct'];
   for (const key of emotionKeys) {
-    if (emotionAnalysis[key] < 0 || emotionAnalysis[key] > 100) {
+    if (!Object.prototype.hasOwnProperty.call(emotionAnalysis, key)) { // 키가 존재하지 않을 때
+      return res.status(400).json({ error: `감정 분석 결과에 '${key}' 키가 누락되었습니다.` });
+    }
+    if (emotionAnalysis[key] < 0 || emotionAnalysis[key] > 100) { // 감정 퍼센티지 범위 검사
       return res.status(400).json({ error: `감정 퍼센티지 값은 0에서 100 사이여야 합니다. [${key}]` });
     }
   }
@@ -58,9 +66,9 @@ export const createDiary = async (req, res) => {
 
     // 일기와 감정 분석 결과 함께 반환
     res.status(201).json({
-        ...newDiary,
-        emotionAnalysis: newEmotionAnalysis,
-      });
+      ...newDiary,
+      emotionAnalysis: newEmotionAnalysis,
+    });
 
   } catch (error) {
     console.error(error);
