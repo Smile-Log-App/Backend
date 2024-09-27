@@ -40,6 +40,11 @@ export const updatePassword = async (req, res) => {
   const { current_password, new_password } = req.body;
   const userId = req.user.userId;
 
+  // 요청 본문 필드 검증
+  if (!current_password || !new_password) {
+    return res.status(400).json({ error: '현재 비밀번호와 새 비밀번호를 입력해주세요.' });
+  }
+
   // 비밀번호 강도 검사
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
   if (!passwordRegex.test(new_password)) {
