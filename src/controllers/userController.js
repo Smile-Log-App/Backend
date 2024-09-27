@@ -40,6 +40,12 @@ export const updatePassword = async (req, res) => {
   const { current_password, new_password } = req.body;
   const userId = req.user.userId;
 
+  // 비밀번호 강도 검사
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  if (!passwordRegex.test(new_password)) {
+    return res.status(400).json({ error: '새 비밀번호는 최소 8자이며, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.' });
+  }
+
   try {
     // 현재 비밀번호 확인
     const user = await prisma.user.findUnique({
@@ -65,9 +71,9 @@ export const updatePassword = async (req, res) => {
       data: { password: hashedNewPassword }
     });
 
+    // 추가: 변경 후 세션/토큰 무효화 처리 로직 추가 (예: 현재 토큰 블랙리스트에 추가, 로그아웃 등)
     res.status(200).json({ message: '비밀번호가 성공적으로 변경되었습니다.' });
   } catch (error) {
     res.status(500).json({ error: '비밀번호 변경 중 오류가 발생했습니다.', message: error.message });
   }
 };
-
