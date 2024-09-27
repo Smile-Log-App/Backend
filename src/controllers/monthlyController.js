@@ -5,6 +5,11 @@ export const getMonthlyEmotions = async (req, res) => {
   const { year, month } = req.query; // 쿼리 파라미터에서 year, month를 가져옴
   const userId = req.user.userId;
 
+  // 유효성 검사
+  if (!year || !month || isNaN(year) || isNaN(month) || month < 1 || month > 12) {
+    return res.status(400).json({ error: '연도와 월을 올바르게 입력해주세요.' });
+  }
+
   try {
     // 주어진 연도와 월에 해당하는 모든 일기를 조회
     const diaries = await prisma.diary.findMany({
@@ -19,6 +24,10 @@ export const getMonthlyEmotions = async (req, res) => {
         emotionAnalysis: true,
       },
     });
+
+    if (diaries.length === 0) {
+      return res.status(404).json({ error: '해당 월의 일기가 존재하지 않습니다.' });
+    }
 
     const monthlyEmotions = diaries.map((diary) => {
       const emotions = diary.emotionAnalysis;
@@ -55,5 +64,3 @@ export const getMonthlyEmotions = async (req, res) => {
     res.status(500).json({ error: '월별 감정 조회 중 오류가 발생했습니다.', message: error.message });
   }
 };
-
-  
