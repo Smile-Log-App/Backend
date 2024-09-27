@@ -66,6 +66,12 @@ export const updatePassword = async (req, res) => {
       return res.status(401).json({ error: '현재 비밀번호가 일치하지 않습니다.' });
     }
 
+    // 현재 비밀번호와 새 비밀번호가 같은지 확인
+    const isSamePassword = await bcrypt.compare(new_password, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({ error: '현재 비밀번호와 새 비밀번호는 달라야 합니다.' });
+    }
+
     // 새 비밀번호 해시화
     const salt = await bcrypt.genSalt(10);
     const hashedNewPassword = await bcrypt.hash(new_password, salt);
