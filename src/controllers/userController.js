@@ -4,6 +4,12 @@ import prisma from '../prisma/prismaClient.js';
 export const getUserInfo = async (req, res) => {
   try {
     const userId = req.user.userId; // 토큰에서 추출된 userId 사용
+
+    // 유효성 검사: userId가 존재하는지 확인
+    if (!userId) {
+      return res.status(400).json({ error: '유효하지 않은 사용자 요청입니다.' });
+    }
+
     const user = await prisma.user.findUnique({
       where: { user_id: userId },
       select: { username: true }
@@ -15,9 +21,17 @@ export const getUserInfo = async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ error: '유저 정보를 조회하는 중 오류가 발생했습니다.', message: error.message });
+    console.error(error);
+
+    // 데이터베이스 오류 처리
+    if (error.code === 'P2021') { // Prisma의 데이터베이스 관련 오류 코드
+      res.status(500).json({ error: '데이터베이스 연결 오류입니다.', message: error.message });
+    } else {
+      res.status(500).json({ error: '유저 정보를 조회하는 중 오류가 발생했습니다.', message: error.message });
+    }
   }
 };
+
 
 import bcrypt from 'bcrypt';
 
