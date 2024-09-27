@@ -54,6 +54,17 @@ export const getDiaryByDate = async (req, res) => {
   const { date } = req.query; // 쿼리 파라미터에서 date를 가져옴
   const userId = req.user.userId;
 
+  // 유효성 검사: date가 올바른 형식인지 확인
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!date || !dateRegex.test(date)) {
+    return res.status(400).json({ error: '올바른 날짜 형식이 아닙니다. 형식: YYYY-MM-DD' });
+  }
+
+  // 유효성 검사: 미래 날짜인지 확인
+  if (new Date(date) > new Date()) {
+    return res.status(400).json({ error: '미래의 날짜는 조회할 수 없습니다.' });
+  }
+
   try {
     const diary = await prisma.diary.findFirst({
       where: {
@@ -74,6 +85,7 @@ export const getDiaryByDate = async (req, res) => {
 
     res.status(200).json(diary);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: '일기 조회 중 오류가 발생했습니다.', message: error.message });
   }
 };
