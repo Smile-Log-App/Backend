@@ -58,18 +58,22 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { user_login_id, password } = req.body;
 
+  if (!user_login_id || !password) {
+    return res.status(400).json({ error: '아이디와 비밀번호를 입력해주세요.' });
+  }
+
   try {
     const user = await prisma.user.findUnique({
       where: { user_login_id: user_login_id },
     });
 
     if (!user) {
-      return res.status(401).json({ error: '사용자를 찾을 수 없습니다.' });
+      return res.status(401).json({ error: '아이디 또는 비밀번호가 잘못되었습니다.' });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.status(401).json({ error: '비밀번호가 잘못되었습니다.' });
+      return res.status(401).json({ error: '아이디 또는 비밀번호가 잘못되었습니다.' });
     }
 
     // Access Token 및 Refresh Token 생성
@@ -92,6 +96,7 @@ export const login = async (req, res) => {
     res.status(500).json({ error: '로그인 처리 중 오류가 발생했습니다.', message: error.message });
   }
 };
+
 
 // Refresh Token을 사용해 새로운 Access Token 발급
 export const refreshAccessToken = async (req, res) => {
