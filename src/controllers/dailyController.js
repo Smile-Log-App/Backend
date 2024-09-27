@@ -19,11 +19,32 @@ export const createDiary = async (req, res) => {
   }
 
   try {
+    // 날짜 설정 (date가 없으면 현재 날짜 사용)
+    const diaryDate = date ? new Date(date) : new Date();
+    const startOfDay = new Date(diaryDate.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(diaryDate.setHours(23, 59, 59, 999));
+
+    // 이미 해당 날짜에 일기가 있는지 확인
+    const existingDiary = await prisma.diary.findFirst({
+      where: {
+        user_id: userId,
+        date: {
+          gte: startOfDay, // 해당 날짜의 시작 시간
+          lt: endOfDay, // 해당 날짜의 끝 시간
+        },
+      },
+    });
+
+    if (existingDiary) {
+      return res.status(409).json({ error: '해당 날짜에 이미 작성된 일기가 있습니다. 하루에 일기는 하나만 작성할 수 있습니다.' });
+    }
+
+    // 새로운 일기 생성
     const newDiary = await prisma.diary.create({
       data: {
         user_id: userId,
         content,
-        date: date ? new Date(date) : new Date(), // date가 없으면 현재 날짜 사용
+        date: diaryDate, // 일기 작성 날짜
       },
     });
 
