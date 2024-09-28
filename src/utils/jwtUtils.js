@@ -1,16 +1,20 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
-const ACCESS_TOKEN_SECRET = 'secret_access_token';  // 강력한 비밀키 사용
-const REFRESH_TOKEN_SECRET = 'secret_refresh_token';  // 강력한 비밀키 사용
+const ACCESS_TOKEN_SECRET = "secret_access_token"; // 강력한 비밀키 사용
+const REFRESH_TOKEN_SECRET = "secret_refresh_token"; // 강력한 비밀키 사용
 
 // Access Token 생성
 export const generateAccessToken = (user) => {
-  return jwt.sign({ userId: user.user_id }, ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+  return jwt.sign({ userId: user.user_id }, ACCESS_TOKEN_SECRET, {
+    expiresIn: "1d",
+  });
 };
 
 // Refresh Token 생성
 export const generateRefreshToken = (user) => {
-  return jwt.sign({ userId: user.user_id }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ userId: user.user_id }, REFRESH_TOKEN_SECRET, {
+    expiresIn: "7d",
+  });
 };
 
 // Access Token 검증
@@ -19,7 +23,7 @@ export const verifyAccessToken = (token) => {
     const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
     return decoded;
   } catch (error) {
-    throw new Error('Invalid Access Token');
+    throw new Error("Invalid Access Token");
   }
 };
 
@@ -28,6 +32,6 @@ export const verifyRefreshToken = (token) => {
   try {
     return jwt.verify(token, REFRESH_TOKEN_SECRET);
   } catch (error) {
-    throw new Error('Invalid Refresh Token');
+    throw new Error("Invalid Refresh Token");
   }
 };
