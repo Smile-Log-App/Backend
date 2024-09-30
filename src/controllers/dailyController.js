@@ -58,10 +58,16 @@ export const createDiary = async (req, res) => {
       },
     });
 
+    // 감정 분석 결과에서 분석 ID와 일기 ID를 제거하고 6개의 감정 퍼센티지만 반환
+    const filteredEmotionAnalysis = emotionKeys.reduce((obj, key) => {
+      obj[key] = newEmotionAnalysis[key];
+      return obj;
+    }, {});
+
     // 일기와 감정 분석 결과 함께 반환
     res.status(201).json({
       ...newDiary,
-      emotionAnalysis: newEmotionAnalysis,
+      emotionAnalysis: filteredEmotionAnalysis,
     });
   } catch (error) {
     console.error(error);
@@ -106,7 +112,19 @@ export const getDiaryByDate = async (req, res) => {
       return res.status(204).json({ message: '해당 날짜의 일기가 없습니다.' });
     }
 
-    res.status(200).json(diary);
+    // 감정 분석 결과에서 analysis_id와 diary_id를 제거하고 6개의 감정 퍼센티지만 반환
+    const emotionKeys = ['joy_pct', 'sadness_pct', 'anxiety_pct', 'anger_pct', 'neutrality_pct', 'fatigue_pct'];
+    const filteredEmotionAnalysis = emotionKeys.reduce((obj, key) => {
+      obj[key] = diary.emotionAnalysis[key];
+      return obj;
+    }, {});
+
+    // 일기와 감정 분석 결과 함께 반환
+    res.status(200).json({
+      ...diary,
+      emotionAnalysis: filteredEmotionAnalysis, // analysis_id와 diary_id 제외한 감정 퍼센티지들만 반환
+    });
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: '일기 조회 중 오류가 발생했습니다.', message: error.message });
