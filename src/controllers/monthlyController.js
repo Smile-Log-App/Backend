@@ -32,8 +32,9 @@ export const getMonthlyEmotions = async (req, res) => {
       },
     });
 
+    // 일기가 없으면 빈 배열 반환
     if (diaries.length === 0) {
-      return res.status(404).json({ error: '해당 월의 일기가 존재하지 않습니다.' });
+      return res.status(200).json({ monthly_emotions: [] });
     }
 
     const monthlyEmotions = diaries.map((diary) => {
