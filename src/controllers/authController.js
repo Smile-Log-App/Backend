@@ -7,22 +7,23 @@ export const register = async (req, res) => {
   const { username, user_login_id, password } = req.body;
 
   try {
-    // username 형식 확인 (영문자, 숫자, 하이픈, 언더스코어만 허용, 3~20자)
-    const idRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-    if (!idRegex.test(username)) {
-      return res.status(400).json({ error: '사용자 이름 형식이 올바르지 않습니다. 영문자, 숫자, 하이픈, 언더스코어만 허용되며, 3~20자 이어야 합니다.' });
-    }
+    // username 형식 확인 (영문자, 숫자, 하이픈, 언더스코어, 2~10자, 한글 허용)
+  const usernameRegex = /^[a-zA-Z0-9가-힣_-]{2,10}$/;
+  if (!usernameRegex.test(username)) {
+    return res.status(400).json({ error: '사용자 이름 형식이 올바르지 않습니다. 영문자, 숫자, 하이픈, 언더스코어, 한글만 허용되며, 2~10자 이어야 합니다.' });
+  }
 
-    // 아이디 형식 확인 (영문자, 숫자, 하이픈, 언더스코어만 허용, 3~20자)
-    if (!idRegex.test(user_login_id)) {
-      return res.status(400).json({ error: '아이디 형식이 올바르지 않습니다. 영문자, 숫자, 하이픈, 언더스코어만 허용되며, 3~20자 이어야 합니다.' });
-    }
+    // 아이디 형식 확인 (영문자, 숫자, 하이픈, 언더스코어만 허용, 5~15자)
+  const idRegex = /^[a-zA-Z0-9_-]{5,15}$/;
+  if (!idRegex.test(user_login_id)) {
+    return res.status(400).json({ error: '아이디 형식이 올바르지 않습니다. 영문자, 숫자, 하이픈, 언더스코어만 허용되며, 5~15자 이어야 합니다.' });
+  }
 
-    // 비밀번호 강도 검사
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({ error: '비밀번호는 최소 8자이며, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.' });
-    }
+    // 비밀번호 강도 검사 (대문자 포함 필요 없음)
+  const passwordRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ error: '비밀번호는 최소 8자이며, 소문자, 숫자, 특수문자를 포함해야 합니다.' });
+  }
 
     // 아이디 중복 확인
     const existingUser = await prisma.user.findUnique({
