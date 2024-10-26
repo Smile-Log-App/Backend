@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors'; // CORS 설정 1
 import authRoutes from './routes/authRoutes.js';
