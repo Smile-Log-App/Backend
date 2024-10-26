@@ -89,10 +89,10 @@ export const getDiaryByDate = async (req, res) => {
     return res.status(400).json({ error: '올바른 날짜 형식이 아닙니다. 형식: YYYY-MM-DD' });
   }
 
-  // 유효성 검사: 미래 날짜인지 확인
-  if (new Date(date) > new Date()) {
-    return res.status(400).json({ error: '미래의 날짜는 조회할 수 없습니다.' });
-  }
+  // // 유효성 검사: 미래 날짜인지 확인
+  // if (new Date(date) > new Date()) {
+  //   return res.status(400).json({ error: '미래의 날짜는 조회할 수 없습니다.' });
+  // }
 
   try {
     const diary = await prisma.diary.findFirst({

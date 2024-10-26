@@ -10,12 +10,12 @@ export const getMonthlyEmotions = async (req, res) => {
     return res.status(400).json({ error: '연도와 월을 올바르게 입력해주세요.' });
   }
 
-  // 미래 날짜인지 확인
-  const queryDate = new Date(`${year}-${month}-01T00:00:00.000Z`);
-  const currentDate = new Date();
-  if (queryDate > currentDate) {
-    return res.status(400).json({ error: '미래의 날짜는 조회할 수 없습니다.' });
-  }
+  // // 미래 날짜인지 확인
+  // const queryDate = new Date(`${year}-${month}-01T00:00:00.000Z`);
+  // const currentDate = new Date();
+  // if (queryDate > currentDate) {
+  //   return res.status(400).json({ error: '미래의 날짜는 조회할 수 없습니다.' });
+  // }
 
   try {
     // 주어진 연도와 월에 해당하는 모든 일기를 조회
