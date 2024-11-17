@@ -22,7 +22,22 @@ app.use(express.json());
 
 // 라우트 설정
 app.use('/api/auth', authRoutes);  // 로그인 및 토큰 갱신 라우트
-app.use(authenticateToken); // 모든 요청에 대해 미들웨어 적용 (전역 설정)
+
+
+// app.use(authenticateToken); // 모든 요청에 대해 미들웨어 적용 (전역 설정)
+
+// 인증 미들웨어를 나머지 경로에 적용
+app.use((req, res, next) => {
+  if (
+    req.path.startsWith('/api/auth/register') || 
+    req.path.startsWith('/api/auth/login')
+  ) {
+    return next(); // register와 login은 인증 미들웨어를 건너뜀
+  }
+  authenticateToken(req, res, next); // 다른 경로에 대해 인증 미들웨어 적용
+});
+
+
 app.use('/api', dailyRoutes);
 app.use('/api', monthlyRoutes);
 app.use('/api/user', userRoutes);
