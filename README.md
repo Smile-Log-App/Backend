@@ -77,11 +77,113 @@
 
 ## 사용법
 
-- **회원가입**: `/api/auth/register`
-- **로그인**: `/api/auth/login`
-- **일기 작성 및 감정 분석**: `/api/daily`
-- **일기 조회**: `/api/daily?date=YYYY-MM-DD`
-- **월별 감정 조회**: `/api/monthly?year=YYYY&month=MM`
+### 1. **회원가입**  
+   - **URL**: `/api/auth/register`  
+   - **메서드**: POST  
+   - **요청 본문**:  
+     ```json
+     {
+       "username": "사용자이름",
+       "user_login_id": "아이디",
+       "password": "비밀번호"
+     }
+     ```
+   - **응답**:  
+     ```json
+     {
+       "message": "사용자가 성공적으로 생성되었습니다.",
+       "userId": 1
+     }
+     ```
+
+### 2. **로그인**  
+   - **URL**: `/api/auth/login`  
+   - **메서드**: POST  
+   - **요청 본문**:  
+     ```json
+     {
+       "user_login_id": "아이디",
+       "password": "비밀번호"
+     }
+     ```  
+   - **응답**:  
+     ```json
+     {
+       "accessToken": "ACCESS_TOKEN",
+       "refreshToken": "REFRESH_TOKEN"
+     }
+     ```  
+   - **설명**: 반환된 `accessToken`과 `refreshToken`을 사용해 인증된 요청을 보낼 수 있습니다.
+
+### 3. **일기 작성**  
+   - **URL**: `/api/daily`  
+   - **메서드**: POST  
+   - **헤더**:  
+     - `Authorization`: Bearer ACCESS_TOKEN  
+   - **요청 본문**:  
+     ```json
+     {
+       "content": "오늘 하루의 일기 내용입니다.",
+       "emotionAnalysis": {
+         "joy_pct": 40,
+         "sadness_pct": 20,
+         "anxiety_pct": 10,
+         "anger_pct": 10,
+         "neutrality_pct": 20,
+         "fatigue_pct": 0
+       }
+     }
+     ```  
+   - **응답**:  
+     ```json
+     {
+       "diary_id": 1,
+       "content": "오늘 하루의 일기 내용입니다.",
+       "emotionAnalysis": {
+         "joy_pct": 40,
+         "sadness_pct": 20,
+         "anxiety_pct": 10,
+         "anger_pct": 10,
+         "neutrality_pct": 20,
+         "fatigue_pct": 0
+       }
+     }
+     ```
+
+### 4. **일기 조회**  
+   - **URL**: `/api/daily?date=YYYY-MM-DD`  
+   - **메서드**: GET  
+   - **헤더**:  
+     - `Authorization`: Bearer ACCESS_TOKEN  
+   - **응답**:  
+     ```json
+     {
+       "content": "오늘 하루의 일기 내용입니다.",
+       "emotionAnalysis": {
+         "joy_pct": 40,
+         "sadness_pct": 20,
+         "anxiety_pct": 10,
+         "anger_pct": 10,
+         "neutrality_pct": 20,
+         "fatigue_pct": 0
+       }
+     }
+     ```
+
+### 5. **월별 감정 조회**  
+   - **URL**: `/api/monthly?year=YYYY&month=MM`  
+   - **메서드**: GET  
+   - **헤더**:  
+     - `Authorization`: Bearer ACCESS_TOKEN  
+   - **응답**:  
+     ```json
+     {
+       "monthly_emotions": [
+         { "date": "2024-06-01", "top_emotion": "joy" },
+         { "date": "2024-06-02", "top_emotion": "neutrality" }
+       ]
+     }
+     ```
 
 ---
 
@@ -92,86 +194,8 @@
 1. **Postman 설치**  
    [Postman 다운로드](https://www.postman.com/) 후 설치합니다.  
 
-2. **회원가입 테스트**
-   - **URL**: `POST http://localhost:3001/api/auth/register`
-   - **요청 본문**:
-     ```json
-     {
-       "username": "테스트유저",
-       "user_login_id": "testuser01",
-       "password": "password123!"
-     }
-     ```
-   - **응답 예시**:
-     ```json
-     {
-       "message": "사용자가 성공적으로 생성되었습니다.",
-       "userId": 1
-     }
-     ```
-
-3. **로그인 테스트**
-   - **URL**: `POST http://localhost:3001/api/auth/login`
-   - **요청 본문**:
-     ```json
-     {
-       "user_login_id": "testuser01",
-       "password": "password123!"
-     }
-     ```
-   - **응답 예시**:
-     ```json
-     {
-       "accessToken": "ACCESS_TOKEN",
-       "refreshToken": "REFRESH_TOKEN"
-     }
-     ```
-
-4. **일기 작성 테스트**
-   - **URL**: `POST http://localhost:3001/api/daily`
-   - **헤더**: `Authorization: Bearer ACCESS_TOKEN`
-   - **요청 본문**:
-     ```json
-     {
-       "content": "오늘은 행복한 하루였다!",
-       "emotionAnalysis": {
-         "joy_pct": 50,
-         "sadness_pct": 10,
-         "anxiety_pct": 0,
-         "anger_pct": 0,
-         "neutrality_pct": 40,
-         "fatigue_pct": 0
-       }
-     }
-     ```
-   - **응답 예시**:
-     ```json
-     {
-       "diary_id": 1,
-       "content": "오늘은 행복한 하루였다!",
-       "emotionAnalysis": {
-         "joy_pct": 50,
-         "sadness_pct": 10,
-         "anxiety_pct": 0,
-         "anger_pct": 0,
-         "neutrality_pct": 40,
-         "fatigue_pct": 0
-       }
-     }
-     ```
-
-5. **월별 감정 조회 테스트**
-   - **URL**: `GET http://localhost:3001/api/monthly?year=2024&month=6`
-   - **헤더**: `Authorization: Bearer ACCESS_TOKEN`
-   - **응답 예시**:
-     ```json
-     {
-       "monthly_emotions": [
-         { "date": "2024-06-01", "top_emotion": "joy" },
-         { "date": "2024-06-02", "top_emotion": "neutrality" }
-       ]
-     }
-     ```
+2. **요청 보내기 & 결과 확인**
+   위의 [사용법](#사용법) 대로 요청을 보낸 후 예시와 같이 응답이 오는지 확인합니다.
 
 ---
 
