@@ -127,6 +127,7 @@
    - **요청 본문**:  
      ```json
      {
+       "date": "2024-09-25",
        "content": "오늘 하루의 일기 내용입니다.",
        "emotionAnalysis": {
          "joy_pct": 40,
@@ -142,6 +143,8 @@
      ```json
      {
        "diary_id": 1,
+       "user_id": 2,
+       "date": "2024-09-25T00:00:00.000Z",
        "content": "오늘 하루의 일기 내용입니다.",
        "emotionAnalysis": {
          "joy_pct": 40,
@@ -162,6 +165,9 @@
    - **응답**:  
      ```json
      {
+       "diary_id": 8,
+       "user_id": 2,
+       "date": "2024-09-25T00:00:00.000Z",
        "content": "오늘 하루의 일기 내용입니다.",
        "emotionAnalysis": {
          "joy_pct": 40,
