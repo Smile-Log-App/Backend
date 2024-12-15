@@ -67,7 +67,12 @@
    npx prisma migrate dev --name init
    ```
 
-5. **서버 실행**
+5. **Prisma Client 생성**
+   ```bash
+   npx prisma generate
+   ```
+
+6. **서버 실행**
    ```bash
    node src/index.js
    ```
